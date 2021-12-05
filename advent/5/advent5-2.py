@@ -27,10 +27,14 @@ path = []
 for d_line in diag_lines:
     dx1, dx2 = d_line[0][0], d_line[1][0]
     dy1, dy2 = d_line[0][1], d_line[1][1]
-    sort_dx = sorted([dx1, dy2])
-    sort_dy = sorted([dy1, dx2])
-    coord_dx = [i for i in range(sort_dx[0], sort_dx[1] + 1)]
-    coord_dy = [i for i in range(sort_dy[0], sort_dy[1] + 1)]
+    negpos1 = 1
+    negpos2 = 1
+    if dx1 > dx2:
+        negpos1 = -1
+    if dy1 > dy2:
+        negpos2 = -1
+    coord_dx = [i for i in range(dx1, dx2 + 1, negpos1)]
+    coord_dy = [i for i in range(dy1, dy2 + 1, negpos2)]
     path.append(list(map(list, zip(coord_dx, coord_dy))))
 
 for item in h_v_lines:
@@ -40,20 +44,20 @@ for item in h_v_lines:
     sort_y = sorted([y1, y2])
     coord_x = [i for i in range(sort_x[0], sort_x[1]+1)]
     coord_y = [i for i in range(sort_y[0], sort_y[1]+1)]
-    p = []
     for x in coord_x:
         for y in coord_y:
             pair = [x,y]
-            p.append(pair)
-    path.append(p)
-
+            try:
+                route[str(pair)] += 1
+            except:
+                route[str(pair)] = -1
 for pc in path:
     for coord in pc:
         try:
             route[str(coord)] += 1
         except:
-            route[str(coord)] = 0
+            route[str(coord)] = -1
 
 
-coord_list = [cood for cood, occurrences in route.items() if occurrences >= 3]
+coord_list = [cood for cood, occurrences in route.items() if occurrences >= 2]
 print(len(coord_list))
